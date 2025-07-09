@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kreatoria - Jurnal Perjalanan Karyamu</title>
+    <style>
+        /* --- Setup Global & Font --- */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+
+        :root {
+            --bg-dark: #111827;
+            --bg-medium: #1F2937;
+            --bg-light: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --accent: #22D3EE;
+            --accent-dark: #0E7490;
+            --navbar-height: 88px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* PERBAIKAN: Konten utama didorong ke bawah seukuran navbar */
+        main {
+            margin-top: var(--navbar-height);
+        }
+
+        /* === HALAMAN WELCOME / SPLASH SCREEN === */
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: var(--accent); } }
+
+        .splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-dark); z-index: 200; display: flex;
+            align-items: center; justify-content: center; transition: opacity 1s ease-in-out;
+        }
+        .splash-logo-container {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            transition: top 1.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        left 1.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .splash-logo {
+            font-size: 48px; font-weight: 800; color: var(--text-primary);
+            overflow: hidden; border-right: .15em solid var(--accent); white-space: nowrap;
+            margin: 0 auto; letter-spacing: .1em;
+            animation: typing 2s steps(9, end), blink-caret .75s step-end infinite;
+            transition: font-size 1.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        letter-spacing 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .splash-screen.active .splash-logo-container {
+            top: calc(var(--navbar-height) / 2); left: 5%;
+            transform: translate(0, -50%);
+        }
+        .splash-screen.active .splash-logo {
+             font-size: 24px; animation: none; border-right: none; letter-spacing: normal;
+        }
+        .splash-screen.hidden { opacity: 0; pointer-events: none; display: none; }
+        #main-content { opacity: 0; transition: opacity 1s ease-in-out; }
+        #main-content.visible { opacity: 1; }
+        /* === AKHIR DARI CSS SPLASH SCREEN === */
+
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 80px 0; }
+        h1, h2, h3 { font-weight: 800; }
+        
+        /* --- Navigasi (MODIFIED FOR FIX) --- */
+        .navbar { 
+            height: var(--navbar-height); 
+            padding: 0 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 100%; 
+            z-index: 100; 
+            position: fixed; /* DIUBAH menjadi fixed */
+            top: 0;
+            left: 0;
+            background-color: var(--bg-dark); /* Latar belakang agar konten tidak tembus */
+            border-bottom: 1px solid var(--bg-medium);
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text-primary); text-decoration: none; opacity: 1; /* Opacity diatur oleh JS di halaman ini */ }
+        .navbar-menu { display: flex; align-items: center; gap: 30px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .nav-button { padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; transition: all 0.3s ease; display: inline-block; }
+        .nav-button-primary { background-color: var(--accent); color: var(--bg-dark); }
+        .nav-button-secondary { background-color: transparent; color: var(--text-primary); border: 1px solid var(--bg-light); }
+        .hamburger-menu { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001; }
+        .hamburger-menu .bar { display: block; width: 25px; height: 3px; background-color: var(--text-primary); margin: 5px 0; transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        .hamburger-menu.active .bar:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger-menu.active .bar:nth-child(2) { opacity: 0; }
+        .hamburger-menu.active .bar:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        @media (max-width: 992px) {
+            .hamburger-menu { display: block; }
+            .navbar-menu { position: absolute; top: var(--navbar-height); left: 0; width: 100%; background-color: var(--bg-medium); flex-direction: column; align-items: center; gap: 0; padding: 20px 0; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, padding 0.5s ease-out; }
+            .navbar-menu.active { max-height: 500px; padding: 20px 0; }
+            .nav-links, .nav-actions { flex-direction: column; gap: 25px; width: 100%; align-items: center; text-align: center; }
+            .nav-links { margin-bottom: 25px; }
+        }
+        
+        /* --- Sisa CSS --- */
+        .hero-section{min-height: calc(100vh - 88px); display:flex;align-items:center;text-align:center;background:radial-gradient(circle at 20% 80%,rgba(34,211,238,.1),transparent 30%),radial-gradient(circle at 80% 30%,rgba(14,116,144,.15),transparent 30%),var(--bg-dark)}.hero-content{max-width:800px;margin:0 auto;padding-top:0}.hero-section h1{font-size:56px;line-height:1.3;margin-bottom:20px}.hero-section .highlight{color:var(--accent)}.animated-text-container{display:inline-block;position:relative;vertical-align:top;height:60px;overflow:hidden;text-align:left;transition:width .3s ease}.animated-text-item{position:absolute;left:0;opacity:0;transform:translateY(100%);transition:transform .6s ease,opacity .6s ease;white-space:nowrap}.animated-text-item.active{opacity:1;transform:translateY(0)}.animated-text-item.leaving{transform:translateY(-100%)}.hero-section p{font-size:18px;color:var(--text-secondary);margin-bottom:40px}.cta-button{display:inline-block;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;transition:all .3s ease}.cta-primary{background-color:var(--accent);color:var(--bg-dark)}.cta-secondary{background-color:transparent;color:var(--text-primary);border:2px solid var(--bg-light);margin-left:15px}.feature-item{display:flex;align-items:center;gap:60px;margin-bottom:100px}.feature-item:nth-child(even){flex-direction:row-reverse}.feature-visual{flex:1;background-color:var(--bg-medium);height:350px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text-secondary)}.feature-text{flex:1}.feature-text h2{font-size:36px;margin-bottom:15px}.feature-text p{font-size:16px;color:var(--text-secondary);line-height:1.7}.showcase-section h2{text-align:center;font-size:40px;margin-bottom:50px}.project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:25px}.project-card{background-color:var(--bg-medium);border-radius:12px;overflow:hidden;transition:transform .3s ease}.project-card img{width:100%;height:220px;object-fit:cover}.project-card-content{padding:20px}.project-card h3{font-size:20px;margin-bottom:10px}.project-card p{color:var(--text-secondary);font-size:14px}.company-section{background-color:var(--bg-medium);text-align:center;padding:80px 5%;border-radius:20px}.company-section h2{font-size:40px;margin-bottom:15px}.company-section p{color:var(--text-secondary);max-width:600px;margin:0 auto 30px auto}.footer{border-top:1px solid var(--bg-light);text-align:center;padding:40px 0}.footer p{color:var(--text-secondary);font-size:14px}
+    .features-section {
+    padding: 0 30px; /* Tambahkan padding kiri-kanan */
+}
+
+.feature-item {
+    gap: 40px;
+    margin-bottom: 100px;
+    align-items: center;
+    flex-wrap: wrap; /* Supaya responsif di layar kecil */
+}
+
+.feature-visual {
+    flex: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 5px; /* Jarak dalam dari konten gambar */
+    box-sizing: border-box;
+}
+
+.feature-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="splash-screen"><div class="splash-logo-container"><div class="splash-logo">Kreatoria</div></div></div>
+
+    <div id="main-content">
+        <nav class="navbar">
+            <a href="index.html" class="logo">Kreatoria</a>
+            <div class="navbar-menu">
+                <div class="nav-links">
+                    <a href="index.html" class="active">Home</a>
+                    <a href="gallery.html">Gallery</a>
+                    <a href="jobs.html">Jobs</a>
+                    <a href="about.html">Eksplorasi Talenta</a>
+                </div>
+                 <div class="nav-actions">
+            <a href="notifikasi.html" class="nav-icon-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge"></span>
+            </a>
+                <div class="nav-actions">
+                    <a href="login.html" class="nav-button nav-button-secondary">Login</a>
+                    <a href="signup.html" class="nav-button nav-button-primary">Sign Up</a>
+                </div>
+                 </div>
+            </div>
+            <button class="hamburger-menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+        </nav>
+        
+        <main>
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1>Bukan Sekadar Portofolio. <br> Ini <span class="highlight animated-text-container"><span class="animated-text-item active">Jurnal Perjalanan</span><span class="animated-text-item">Cerita Proses</span><span class="animated-text-item">Ruang Kolaborasi</span><span class="animated-text-item">Panggung Evolusi</span></span> Karyamu.</h1>
+                    <p>Platform untuk kreator, developer, dan desainer mendokumentasikan proses, berkolaborasi dalam proyek, dan mengubah ide menjadi peluang.</p>
+                    <a href="#" class="cta-button cta-primary">Mulai Perjalananmu</a>
+                    <a href="#" class="cta-button cta-secondary">Lihat Karya Kreator →</a>
+                </div>
+            </section>
+            <section class="features-section">
+  <div class="feature-item">
+    <div class="feature-visual">
+      <img src="images/2.jpg" alt="Visual Timeline Proyek">
+    </div>
+    <div class="feature-text">
+      <h2>Dokumentasikan Setiap Evolusi.</h2>
+      <p>Unggah sketsa, code snippet, desain, hingga catatan rapat. Biarkan dunia melihat proses brilian di balik setiap karya besar Anda.</p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-visual">
+      <img src="images/1.jpg" alt="Visual Koneksi Kolaborasi">
+    </div>
+    <div class="feature-text">
+      <h2>Temukan Sinergi Kolaborasi.</h2>
+      <p>Cari talenta dengan keahlian spesifik. Ajak mereka bergabung dalam proyek Anda atau tawarkan diri untuk menjadi bagian dari sebuah ide besar.</p>
+    </div>
+  </div>
+</section>
+
+        </main>
+        
+        <footer class="footer"><div class="container"><p>&copy; 2025 Kreatoria. Semua Hak Cipta Dilindungi.</p></div></footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- SCRIPT UTAMA DENGAN LOGIKA SESSIONSTORAGE ---
+        const splashScreen = document.querySelector('.splash-screen');
+        const mainContent = document.querySelector('#main-content');
+        const mainLogo = document.querySelector('.navbar .logo');
+        mainLogo.style.opacity = '0'; 
+
+        const runSplashAnimation = () => {
+            sessionStorage.setItem('splashSeen', 'true');
+            setTimeout(() => { splashScreen.classList.add('active'); }, 2500);
+            setTimeout(() => { mainContent.classList.add('visible'); }, 3500);
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+                mainLogo.style.opacity = '1';
+            }, 4100); 
+            setTimeout(() => { if (splashScreen) { splashScreen.style.display = 'none'; } }, 5100);
+        };
+
+        const skipSplashAnimation = () => {
+            if (splashScreen) { splashScreen.style.display = 'none'; }
+            mainContent.classList.add('visible');
+            mainLogo.style.opacity = '1';
+        };
+
+        if (sessionStorage.getItem('splashSeen') === 'true') {
+            skipSplashAnimation();
+        } else {
+            runSplashAnimation();
+        }
+
+        // --- Script untuk Navbar Responsif (Hamburger) ---
+        const hamburger = document.querySelector('.hamburger-menu');
+        const navMenu = document.querySelector('.navbar-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        // --- Script untuk Animasi Teks di Hero Section (KODE YANG HILANG DIKEMBALIKAN) ---
+        const textContainer = document.querySelector('.animated-text-container');
+        if (textContainer) {
+            const textItems = document.querySelectorAll('.animated-text-item');
+            let currentIndex = 0;
+            const intervalTime = 3000;
+            
+            function animateText() {
+                const currentItem = textItems[currentIndex];
+                const nextIndex = (currentIndex + 1) % textItems.length;
+                const nextItem = textItems[nextIndex];
+
+                if (nextItem) {
+                    textContainer.style.width = nextItem.offsetWidth + 'px';
+                }
+
+                if (currentItem) {
+                    currentItem.classList.add('leaving');
+                    currentItem.classList.remove('active');
+                }
+                
+                if (nextItem) {
+                    nextItem.classList.add('active');
+                }
+
+                setTimeout(() => {
+                    if (currentItem) {
+                        currentItem.classList.remove('leaving');
+                    }
+                }, 600);
+                
+                currentIndex = nextIndex;
+            }
+
+            if (textItems.length > 0) {
+                textContainer.style.width = textItems[0].offsetWidth + 'px';
+                setInterval(animateText, intervalTime);
+            }
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eksplorasi Talenta - Kreatoria</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+    :root {
+      --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+      --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+      --navbar-height: 88px;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-primary);
+        margin: 0;
+        /* [PERBAIKAN] Mencegah scroll horizontal */
+        overflow-x: hidden;
+    }
+    .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 40px 0; }
+    .navbar {
+  box-sizing: border-box;
+  padding: 16px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid var(--bg-medium);
+  background-color: var(--bg-dark);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+    .logo { font-size: 24px; font-weight: 800; color: var(--text-primary); text-decoration: none; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+    .nav-links a.active { color: var(--text-primary); }
+    .profile-dropdown { position: relative; }
+    .profile-btn { display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; }
+    .profile-img { width: 40px; height: 40px; border-radius: 50%; }
+    .profile-name { font-weight: 600; }
+    .dropdown-menu { display: none; position: absolute; top: 60px; right: 0; background-color: var(--bg-medium); border-radius: 8px; z-index: 110; min-width: 180px; border: 1px solid var(--bg-light); }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu a { display: block; padding: 12px 20px; color: var(--text-secondary); }
+    #logout-btn { color: #ef4444; }
+    .page-header { text-align: center; padding: 60px 20px 40px; }
+    .page-header h1 { font-size: 48px; }
+    .page-header p { font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 10px auto 0; }
+    
+    /* [DITAMBAHKAN] Style untuk Tombol AI di Header */
+    .ai-cta-section { margin-top: 40px; padding: 30px; background-image: linear-gradient(45deg, #0E7490, var(--bg-medium) 70%); border-radius: 12px; text-align: center; }
+    .ai-cta-section .tagline { font-size: 22px; font-weight: 700; display: block; margin-bottom: 15px; }
+    .btn-ai-cta { padding: 12px 30px; border-radius: 8px; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 10px; background-color: var(--accent); color: var(--bg-dark); text-decoration: none; border: none; cursor: pointer; }
+
+    .filter-controls { background-color: var(--bg-medium); padding: 30px; border-radius: 12px; margin-bottom: 50px; }
+    .top-filters { display: grid; grid-template-columns: 2fr auto auto; gap: 15px; margin-bottom: 20px; align-items: center; }
+    .search-bar-wrapper { position: relative; width: 100%; }
+    #search-bar { width: 100%; padding: 14px 20px 14px 45px; background-color: var(--bg-dark); border: 1px solid var(--bg-light); border-radius: 8px; color: var(--text-primary); font-size: 16px; }
+    .search-bar-wrapper .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+    .filter-toggle, .filter-reset { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .filter-toggle { background-color: var(--accent); color: var(--bg-dark); }
+    .filter-reset { background-color: transparent; color: var(--text-secondary); border: 1px solid var(--bg-light); }
+    .role-filters.hidden { display: none; }
+    .role-filters { display: flex; gap: 15px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--bg-light); }
+    .role-filters label { display: block; background-color: var(--bg-light); padding: 8px 18px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; user-select: none; }
+    .role-filters input[type="checkbox"] { display: none; }
+    .role-filters input[type="checkbox"]:checked + label { background-color: var(--accent); color: var(--bg-dark); font-weight: 700; }
+    .talent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+    .talent-card { background-color: var(--bg-medium); padding: 25px; border-radius: 12px; text-align: center; transition: all 0.3s ease; }
+    .talent-card img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid var(--bg-light); }
+    .talent-card h3 { font-size: 20px; }
+    .talent-card p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+    .talent-card .talent-details { margin-top: 15px; font-size: 14px; }
+    .talent-card .talent-role { display: inline-block; background-color: var(--accent); color: var(--bg-dark); padding: 4px 12px; border-radius: 15px; font-weight: 700; }
+  .nav-icon-btn {
+        position: relative;
+        color: var(--text-secondary);
+        font-size: 20px;
+        transition: color 0.3s ease;
+        text-decoration: none;
+    }
+    .nav-icon-btn:hover {
+        color: var(--text-primary);
+    }
+    .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Memberi jarak antara ikon notifikasi dan profil */
+}
+    .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -4px;
+        width: 10px;
+        height: 10px;
+        background-color: #ef4444; /* Merah */
+        border-radius: 50%;
+        border: 2px solid var(--bg-medium);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index1.html" class="logo">Kreatoria</a>
+    <div class="nav-links">
+      <a href="index2.html">Home</a>
+      <a href="gallery-loggedin.html">Gallery</a>
+      <a href="jobs-loggedin.html">Jobs</a>
+      <a href="eksplorasi.html" class="active">Eksplorasi Talenta</a>
+    </div>
+    <div class="nav-actions">
+            <a href="notifikasi.html" class="nav-icon-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge"></span>
+            </a>
+    
+    <div class="profile-dropdown">
+      <button class="profile-btn">
+        <img src="https://i.pravatar.cc/40" alt="Avatar" class="profile-img" />
+        <span class="profile-name" id="user-display-name">User</span>
+      </button>
+      <div class="dropdown-menu">
+        <a href="profileperu.html">Profil Saya</a>
+        <a href="settings.html">Pengaturan</a>
+        <a href="#" id="logout-btn">Logout</a>
+      </div>
+    </div>
+    </div>
+  </nav>
+  <main>
+    <header class="page-header">
+      <h1>Eksplorasi Talenta</h1>
+      <p>Cari, filter, dan temukan talenta yang paling sesuai dengan kebutuhan Anda.</p>
+      
+      <div class="ai-cta-section">
+        <span class="tagline">Lewati pencarian manual. Dapatkan rekomendasi instan dari AI.</span>
+        <a href="ai-assistant.html" class="btn-ai-cta">
+            <i class="fas fa-magic"></i>
+            <span>Gunakan Asisten Talenta</span>
+        </a>
+      </div>
+    </header>
+    <div class="container">
+      <div class="filter-controls">
+        <div class="top-filters">
+          <div class="search-bar-wrapper">
+            <span class="icon"><i class="fas fa-search"></i></span>
+            <input type="search" id="search-bar" placeholder="Cari berdasarkan nama talenta...">
+          </div>
+          <button class="filter-toggle" id="toggle-role-filters"><i class="fas fa-sliders-h"></i> Pilih Role</button>
+          <button class="filter-reset" id="reset-filters"><i class="fas fa-times-circle"></i> Reset</button>
+        </div>
+        <div class="role-filters hidden" id="role-filters">
+          <input type="checkbox" id="role-uiux" name="role" value="UI/UX Designer"><label for="role-uiux">UI/UX Designer</label>
+          <input type="checkbox" id="role-frontend" name="role" value="Frontend Developer"><label for="role-frontend">Frontend Developer</label>
+          <input type="checkbox" id="role-branding" name="role" value="Branding"><label for="role-branding">Branding</label>
+          <input type="checkbox" id="role-ilustrator" name="role" value="Ilustrator"><label for="role-ilustrator">Ilustrator</label>
+        </div>
+      </div>
+      <div class="talent-grid" id="talent-grid-container"></div>
+    </div>
+  </main>
+
+  <script>
+    // JavaScript tidak ada perubahan
+    document.addEventListener('DOMContentLoaded', () => {
+      const sampleTalents = [
+        { name: 'Clara Wijaya', email: 'clara.w@example.com', role: 'UI/UX Designer' }, { name: 'David Lee', email: 'david.lee@example.com', role: 'Frontend Developer' },
+        { name: 'Rina Agustina', email: 'rina.a@example.com', role: 'Branding' }, { name: 'Budi Santoso', email: 'budi.s@example.com', role: 'Ilustrator' },
+        { name: 'Siti Aminah', email: 'siti.a@example.com', role: 'Frontend Developer' }, { name: 'Alex Surya', email: 'alex.s@example.com', role: 'UI/UX Designer' }
+      ];
+      const talentGrid = document.getElementById('talent-grid-container');
+      const searchBar = document.getElementById('search-bar');
+      const roleCheckboxes = document.querySelectorAll('input[name="role"]');
+      function renderTalents(data) {
+        talentGrid.innerHTML = data.length === 0 ? '<p style="color: var(--text-secondary); text-align: center; grid-column: 1 / -1;">Talenta tidak ditemukan.</p>' : data.map(t => `
+          <div class="talent-card">
+            <img src="https://ui-avatars.com/api/?name=${t.name.split(' ').join('+')}&background=22D3EE&color=111827&bold=true" alt="${t.name}">
+            <h3>${t.name}</h3>
+            <p>${t.email}</p>
+            <div class="talent-details"><span class="talent-role">${t.role}</span></div>
+          </div>`).join('');
+      }
+      function filterTalents() {
+        const search = searchBar.value.toLowerCase();
+        const selectedRoles = Array.from(roleCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+        let filtered = sampleTalents.filter(talent => talent.name.toLowerCase().includes(search));
+        if (selectedRoles.length > 0) { filtered = filtered.filter(talent => selectedRoles.includes(talent.role)); }
+        renderTalents(filtered);
+      }
+      searchBar.addEventListener('input', filterTalents);
+      roleCheckboxes.forEach(cb => cb.addEventListener('change', filterTalents));
+      document.getElementById('toggle-role-filters').addEventListener('click', () => { document.getElementById('role-filters').classList.toggle('hidden'); });
+      document.getElementById('reset-filters').addEventListener('click', () => { searchBar.value = ''; roleCheckboxes.forEach(cb => cb.checked = false); renderTalents(sampleTalents); });
+      renderTalents(sampleTalents);
+    });
+  </script>
+  <script src="auth.js"></script> 
+</body>
+</html>

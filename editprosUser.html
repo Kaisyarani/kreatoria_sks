@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil Saya - Kreatoria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+        :root {
+            --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+            --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); }
+        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 40px 0; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 28px; }
+        .action-buttons { display: flex; gap: 15px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; }
+        .btn-primary { background-color: var(--accent); color: var(--bg-dark); }
+        .btn-primary:hover { background-color: #0E7490; color: var(--text-primary); }
+        .btn-secondary { background-color: var(--bg-medium); color: var(--text-primary); }
+        .btn-secondary:hover { background-color: var(--bg-light); }
+        .profile-layout { display: flex; gap: 30px; }
+        .sidebar { width: 250px; flex-shrink: 0; }
+        .main-content { flex-grow: 1; }
+        
+        .photo-upload-wrapper { background-color: var(--bg-medium); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .photo-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--bg-light); object-fit: cover; margin: 0 auto 15px auto; display: block; }
+        .photo-upload-wrapper label, .banner-upload-wrapper label { color: var(--accent); cursor: pointer; font-weight: 600; display: block; padding: 8px; }
+        .banner-upload-wrapper { background-color: var(--bg-medium); padding: 15px; border-radius: 12px; text-align: center; }
+        #photo-upload, #banner-upload { display: none; }
+
+        .form-section { background-color: var(--bg-medium); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        .form-section h2 { font-size: 20px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--bg-light); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; background-color: var(--bg-dark); border: 1px solid var(--bg-light); border-radius: 8px; color: var(--text-primary); font-size: 15px; font-family: inherit; }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .dynamic-field-group { background-color: var(--bg-dark); padding: 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--bg-light); position: relative; }
+        .btn-remove-field { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ef4444; cursor: pointer; font-size: 20px; }
+        #add-experience-btn, #add-education-btn { width: 100%; text-align: center; justify-content: center; background-color: var(--bg-light); color: var(--text-primary); }
+
+        @media (max-width: 992px) { .profile-layout { flex-direction: column; } .sidebar { width: 100%; } }
+        @media (max-width: 576px) { .grid-2-col { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1>Edit Profil Saya</h1>
+            <div class="action-buttons">
+                <a href="my-profile.html" class="btn btn-secondary">Batal</a>
+                <button form="edit-profile-form" type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </div>
+        </header>
+
+        <div class="profile-layout">
+            <aside class="sidebar">
+                <div class="photo-upload-wrapper">
+                    <img src="https://ui-avatars.com/api/?name=User+Name&background=1F2937&color=F9FAFB&size=128" alt="Foto Profil" id="photo-preview" class="photo-preview">
+                    <label for="photo-upload">Ubah Foto Profil</label>
+                    <input type="file" id="photo-upload" accept="image/*">
+                </div>
+                <div class="banner-upload-wrapper">
+                    <label for="banner-upload">Ubah Banner</label>
+                    <input type="file" id="banner-upload" accept="image/*">
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <form id="edit-profile-form">
+                    <div class="form-section">
+                        <h2>Informasi Dasar</h2>
+                        <div class="grid-2-col">
+                            <div class="form-group"><label for="edit-name">Nama Lengkap</label><input type="text" id="edit-name" placeholder="Nama lengkap Anda"></div>
+                            <div class="form-group"><label for="edit-title">Jabatan / Title</label><input type="text" id="edit-title" placeholder="Contoh: UI/UX Designer"></div>
+                        </div>
+                        <div class="form-group"><label for="edit-about">Tentang Saya / Ringkasan</label><textarea id="edit-about" placeholder="Ceritakan sedikit tentang diri Anda..."></textarea></div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Keahlian & Tautan Sosial</h2>
+                        <div class="form-group"><label for="edit-skills">Keahlian (pisahkan dengan koma)</label><input type="text" id="edit-skills" placeholder="Contoh: Figma, HTML, CSS, JavaScript"></div>
+                        <div class="grid-2-col">
+                            <div class="form-group"><label for="social-linkedin">LinkedIn</label><input type="url" id="social-linkedin" placeholder="https://linkedin.com/in/username"></div>
+                            <div class="form-group"><label for="social-dribbble">Dribbble / Behance</label><input type="url" id="social-dribbble" placeholder="https://dribbble.com/username"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2>Pengalaman Kerja</h2>
+                        <div id="experience-fields-container"></div>
+                        <button type="button" id="add-experience-btn" class="btn"><i class="fas fa-plus"></i> Tambah Pengalaman</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Pendidikan</h2>
+                        <div id="education-fields-container"></div>
+                        <button type="button" id="add-education-btn" class="btn"><i class="fas fa-plus"></i> Tambah Pendidikan</button>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const photoInput = document.getElementById('photo-upload');
+            const photoPreview = document.getElementById('photo-preview');
+            const bannerInput = document.getElementById('banner-upload');
+            
+            // --- Logika untuk menambah & menghapus field ---
+            function setupDynamicFields(containerId, buttonId, fieldHTMLGenerator) {
+                const container = document.getElementById(containerId);
+                const addButton = document.getElementById(buttonId);
+                let count = 0;
+
+                function addField() {
+                    count++;
+                    const fieldGroup = document.createElement('div');
+                    fieldGroup.className = 'dynamic-field-group';
+                    fieldGroup.innerHTML = fieldHTMLGenerator(count);
+                    container.appendChild(fieldGroup);
+                    fieldGroup.querySelector('.btn-remove-field').addEventListener('click', () => fieldGroup.remove());
+                }
+                addButton.addEventListener('click', addField);
+                addField(); // Tambah satu field default
+            }
+
+            // Setup untuk Pengalaman
+            setupDynamicFields('experience-fields-container', 'add-experience-btn', (c) => `
+                <button type="button" class="btn-remove-field" title="Hapus">&times;</button>
+                <div class="form-group"><label for="exp-title-${c}">Jabatan</label><input type="text" id="exp-title-${c}" placeholder="Contoh: UI Designer"></div>
+                <div class="form-group"><label for="exp-company-${c}">Perusahaan</label><input type="text" id="exp-company-${c}" placeholder="Contoh: PT Kreatoria Indonesia"></div>
+                <div class="grid-2-col">
+                    <div class="form-group"><label for="exp-start-${c}">Tanggal Mulai</label><input type="month" id="exp-start-${c}"></div>
+                    <div class="form-group"><label for="exp-end-${c}">Tanggal Selesai</label><input type="month" id="exp-end-${c}"></div>
+                </div>
+            `);
+
+            // Setup untuk Pendidikan
+            setupDynamicFields('education-fields-container', 'add-education-btn', (c) => `
+                <button type="button" class="btn-remove-field" title="Hapus">&times;</button>
+                <div class="form-group"><label for="edu-school-${c}">Nama Institusi</label><input type="text" id="edu-school-${c}" placeholder="Contoh: Universitas Gadjah Mada"></div>
+                <div class="form-group"><label for="edu-degree-${c}">Gelar</label><input type="text" id="edu-degree-${c}" placeholder="Contoh: Sarjana Ilmu Komputer"></div>
+                <div class="form-group"><label for="edu-year-${c}">Tahun Lulus</label><input type="number" id="edu-year-${c}" placeholder="2025" min="1980" max="2040"></div>
+            `);
+
+            // --- Logika saat form di-submit ---
+            const editForm = document.getElementById('edit-profile-form');
+            editForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                function getBase64(file, callback) {
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => callback(reader.result);
+                        reader.onerror = error => console.error('Error: ', error);
+                        reader.readAsDataURL(file);
+                    } else {
+                        callback(null);
+                    }
+                }
+
+                getBase64(photoInput.files[0], (photoData) => {
+                    getBase64(bannerInput.files[0], (bannerData) => {
+                        const profileData = {
+                            name: document.getElementById('edit-name').value,
+                            title: document.getElementById('edit-title').value,
+                            about: document.getElementById('edit-about').value,
+                            skills: document.getElementById('edit-skills').value.split(',').map(s => s.trim()).filter(s => s),
+                            social: {
+                                linkedin: document.getElementById('social-linkedin').value,
+                                dribbble: document.getElementById('social-dribbble').value,
+                            },
+                            photo: photoData || photoPreview.src,
+                            banner: bannerData,
+                            experience: [],
+                            education: []
+                        };
+
+                        document.querySelectorAll('#experience-fields-container .dynamic-field-group').forEach((group, i) => {
+                            profileData.experience.push({
+                                title: group.querySelector(`input[id^="exp-title-"]`).value,
+                                company: group.querySelector(`input[id^="exp-company-"]`).value,
+                                start: group.querySelector(`input[id^="exp-start-"]`).value,
+                                end: group.querySelector(`input[id^="exp-end-"]`).value,
+                            });
+                        });
+                        
+                        document.querySelectorAll('#education-fields-container .dynamic-field-group').forEach((group, i) => {
+                            profileData.education.push({
+                                school: group.querySelector(`input[id^="edu-school-"]`).value,
+                                degree: group.querySelector(`input[id^="edu-degree-"]`).value,
+                                year: group.querySelector(`input[id^="edu-year-"]`).value,
+                            });
+                        });
+
+                        localStorage.setItem('userProfileData', JSON.stringify(profileData));
+                        alert('Profil berhasil disimpan!');
+                        window.location.href = 'my-profile.html';
+                    });
+                });
+            });
+             // Live preview untuk foto profil
+             photoInput.addEventListener('change', function () { if (this.files[0]) { photoPreview.src = URL.createObjectURL(this.files[0]); } });
+        });
+    </script>
+</body>
+</html>

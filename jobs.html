@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lowongan Kerja - Kreatoria</title>
+    <style>
+        /* CSS Global & Font */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+        :root {
+            --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+            --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+            --navbar-height: 88px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); overflow-x: hidden; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 40px 0; }
+        h1, h2, h3 { font-weight: 800; }
+        
+        /* --- Navigasi (VERSI SEBELUM LOGIN) --- */
+        .navbar { height: var(--navbar-height); padding: 0 5%; display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 100; position: relative; border-bottom: 1px solid var(--bg-medium); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text-primary); text-decoration: none; }
+        .navbar-menu { display: flex; align-items: center; gap: 30px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        
+        /* Style untuk Tombol Navigasi */
+        .nav-button { padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; transition: all 0.3s ease; display: inline-block; }
+        .nav-button-primary { background-color: var(--accent); color: var(--bg-dark); }
+        .nav-button-secondary { background-color: transparent; color: var(--text-primary); border: 1px solid var(--bg-light); }
+        .nav-button-secondary:hover { background-color: var(--bg-light); }
+
+        .hamburger-menu { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001; }
+        .hamburger-menu .bar { display: block; width: 25px; height: 3px; background-color: var(--text-primary); margin: 5px 0; transition: all 0.4s ease; }
+
+        @media (max-width: 992px) {
+            .hamburger-menu { display: block; }
+            .navbar-menu { position: absolute; top: var(--navbar-height); left: 0; width: 100%; background-color: var(--bg-medium); flex-direction: column; align-items: center; gap: 0; padding: 20px 0; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+            .navbar-menu.active { max-height: 500px; }
+            .nav-links, .nav-actions { flex-direction: column; gap: 25px; width: 100%; align-items: center; }
+            .nav-links { margin-bottom: 25px; }
+        }
+
+        /* --- STYLE HALAMAN JOBS --- */
+        .page-header { text-align: center; padding: 60px 0; background-color: var(--bg-medium); }
+        .page-header h1 { font-size: 48px; margin-bottom: 10px; }
+        .page-header p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        .job-card { background-color: var(--bg-medium); border-radius: 12px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--bg-light); transition: border-color 0.3s ease, transform 0.3s ease; }
+        .job-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .job-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .job-card-title { font-size: 22px; color: var(--text-primary); }
+        .job-card-company { font-size: 16px; color: var(--text-secondary); margin-top: 5px; }
+        .job-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .job-tag { background-color: var(--bg-light); color: var(--text-secondary); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+        .job-card-description { color: var(--text-secondary); line-height: 1.7; }
+        .footer{border-top:1px solid var(--bg-light);text-align:center;padding:40px 0}
+        .footer p{color:var(--text-secondary);font-size:14px}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Kreatoria</a>
+        <div class="navbar-menu">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="jobs.html" class="active">Jobs</a>
+                <a href="about.html">About Us</a>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="nav-button nav-button-secondary">Login</a>
+                <a href="signup.html" class="nav-button nav-button-primary">Sign Up</a>
+            </div>
+        </div>
+        <button class="hamburger-menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+    </nav>
+        
+    <main>
+        <header class="page-header">
+            <h1>Temukan Peluang Karir Kreatif Anda</h1>
+            <p>Jelajahi ratusan lowongan kerja di bidang desain, pengembangan, penulisan, dan industri kreatif lainnya.</p>
+        </header>
+
+        <div class="container">
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div>
+                        <h2 class="job-card-title">Senior UI/UX Designer</h2>
+                        <p class="job-card-company">Gojek • Jakarta, Indonesia</p>
+                    </div>
+                    <a href="login.html" class="nav-button nav-button-primary">Lamar</a>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Full-time</span>
+                    <span class="job-tag">UI/UX</span>
+                    <span class="job-tag">Mobile Apps</span>
+                </div>
+                <p class="job-card-description">Mencari desainer UI/UX berpengalaman untuk memimpin desain produk inti kami, berkolaborasi dengan manajer produk dan engineer untuk menciptakan pengalaman pengguna yang mulus.</p>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div>
+                        <h2 class="job-card-title">Frontend Developer (React)</h2>
+                        <p class="job-card-company">Tokopedia • Remote</p>
+                    </div>
+                    <a href="login.html" class="nav-button nav-button-primary">Lamar</a>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Full-time</span>
+                    <span class="job-tag">Remote</span>
+                    <span class="job-tag">Developer</span>
+                </div>
+                <p class="job-card-description">Kami mencari developer Frontend yang mahir dengan React dan TypeScript untuk membangun komponen UI yang reusable dan modern untuk platform e-commerce kami.</p>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div>
+                        <h2 class="job-card-title">Content Writer & SEO Specialist</h2>
+                        <p class="job-card-company">Traveloka • Hybrid</p>
+                    </div>
+                    <a href="login.html" class="nav-button nav-button-primary">Lamar</a>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Full-time</span>
+                    <span class="job-tag">Writing</span>
+                    <span class="job-tag">Marketing</span>
+                </div>
+                <p class="job-card-description">Bertanggung jawab untuk membuat konten blog yang menarik dan dioptimalkan untuk SEO, serta mengelola strategi konten untuk meningkatkan visibilitas brand.</p>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div>
+                        <h2 class="job-card-title">Brand & Graphic Designer</h2>
+                        <p class="job-card-company">Eiger Adventure • Bandung, Indonesia</p>
+                    </div>
+                    <a href="login.html" class="nav-button nav-button-primary">Lamar</a>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Full-time</span>
+                    <span class="job-tag">Design</span>
+                    <span class="job-tag">Branding</span>
+                </div>
+                <p class="job-card-description">Membuat dan mengembangkan identitas visual brand di berbagai media, mulai dari kampanye digital, kemasan produk, hingga materi promosi offline.</p>
+            </div>
+        </div>
+    </main>
+        
+    <footer class="footer"><div class="container"><p>&copy; 2025 Kreatoria. Semua Hak Cipta Dilindungi.</p></div></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger-menu');
+            const navMenu = document.querySelector('.navbar-menu');
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

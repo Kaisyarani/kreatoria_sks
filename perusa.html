@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil Perusahaan - Kreatoria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+        :root {
+            --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+            --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); }
+        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 40px 0; }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .page-header h1 { font-size: 28px; }
+        .action-buttons button {
+            background-color: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .action-buttons button:hover {
+            background-color: #0E7490;
+            color: var(--text-primary);
+        }
+
+        .profile-layout {
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+        }
+        .logo-upload-wrapper {
+            background-color: var(--bg-medium);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--bg-light);
+            object-fit: cover;
+            margin: 0 auto 15px auto;
+            display: block;
+        }
+        .logo-upload-wrapper label {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        #logo-upload { display: none; }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 15px 20px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .sidebar-nav a.active, .sidebar-nav a:hover {
+            background-color: var(--bg-medium);
+            color: var(--text-primary);
+        }
+        .sidebar-nav a i {
+            margin-right: 12px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+        }
+        .form-section {
+            background-color: var(--bg-medium);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .form-section h2 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--bg-light);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: inherit;
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .form-group small {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .banner-upload-wrapper {
+            margin-bottom: 20px;
+        }
+        .banner-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            background-color: var(--bg-light);
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        #banner-upload { display: none; }
+
+        @media (max-width: 992px) {
+            .profile-layout { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
+        @media (max-width: 576px) {
+            .grid-2-col { grid-template-columns: 1fr; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .form-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1>Edit Profil Perusahaan</h1>
+            <div class="action-buttons">
+                <button onclick="document.getElementById('company-profile-form').submit();">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </div>
+        </header>
+
+        <div class="profile-layout">
+            <aside class="sidebar">
+                <div class="logo-upload-wrapper">
+                    <img src="https://ui-avatars.com/api/?name=Company&background=111827&color=F9FAFB&size=128" alt="Logo Perusahaan" id="logo-preview" class="logo-preview">
+                    <label for="logo-upload">Ubah Logo</label>
+                    <input type="file" id="logo-upload" accept="image/*">
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="#" class="active"><i class="fas fa-building"></i> Profil Perusahaan</a>
+            </aside>
+
+            <main class="main-content">
+                <form id="company-profile-form">
+                    <div class="form-section">
+                        <h2>Informasi Publik</h2>
+                        <div class="banner-upload-wrapper">
+                            <label for="banner-upload" class="form-group-label">Gambar Banner</label>
+                            <label for="banner-upload">
+                                <img src="https://placehold.co/800x200/1F2937/9CA3AF?text=Klik+untuk+mengubah+banner" alt="Banner" id="banner-preview" class="banner-preview">
+                            </label>
+                            <input type="file" id="banner-upload" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label for="company-name">Nama Perusahaan</label>
+                            <input type="text" id="company-name" value="Nama Agensi Digital Anda">
+                        </div>
+                        <div class="form-group">
+                            <label for="company-tagline">Tagline</label>
+                            <input type="text" id="company-tagline" placeholder="Contoh: We Build Awesome Digital Experiences">
+                            <small>Slogan singkat yang mendeskripsikan perusahaan Anda.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="company-description">Tentang Perusahaan</label>
+                            <textarea id="company-description" placeholder="Jelaskan sejarah, visi, dan misi perusahaan Anda."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Detail & Kontak</h2>
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label for="company-website">Situs Web</label>
+                                <input type="url" id="company-website" placeholder="https://www.agensianda.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="company-email">Email Kontak</label>
+                                <input type="email" id="company-email" placeholder="kontak@agensianda.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="company-industry">Industri</label>
+                                <select id="company-industry">
+                                    <option>Teknologi & Software</option>
+                                    <option>Pemasaran & Periklanan</option>
+                                    <option>Desain & Kreatif</option>
+                                    <option>Game Development</option>
+                                    <option>E-commerce</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="company-size">Ukuran Perusahaan</label>
+                                <select id="company-size">
+                                    <option>1-10 Karyawan</option>
+                                    <option>11-50 Karyawan</option>
+                                    <option>51-200 Karyawan</option>
+                                    <option>201+ Karyawan</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="company-location">Lokasi</label>
+                                <input type="text" id="company-location" placeholder="Contoh: Jakarta, Indonesia">
+                            </div>
+                            <div class="form-group">
+                                <label for="company-founded">Tahun Berdiri</label>
+                                <input type="number" id="company-founded" placeholder="2020">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2>Tautan Sosial</h2>
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label for="social-linkedin">LinkedIn</label>
+                                <input type="url" id="social-linkedin" placeholder="https://linkedin.com/company/agensianda">
+                            </div>
+                             <div class="form-group">
+                                <label for="social-instagram">Instagram</label>
+                                <input type="url" id="social-instagram" placeholder="https://instagram.com/agensianda">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Script untuk live preview gambar
+        document.addEventListener('DOMContentLoaded', function () {
+            function setupImagePreview(inputId, previewId) {
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+                if (!input || !preview) return;
+
+                input.addEventListener('change', function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            preview.src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            setupImagePreview('logo-upload', 'logo-preview');
+            setupImagePreview('banner-upload', 'banner-preview');
+            
+            // Logika untuk menyimpan data ke localStorage
+            const form = document.getElementById('company-profile-form');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Profil berhasil disimpan! (Data tersimpan di localStorage)');
+                // Di aplikasi nyata, data akan dikirim ke server.
+                // Untuk demo ini, kita bisa simpan ke localStorage
+                const companyProfile = {
+                    name: document.getElementById('company-name').value,
+                    tagline: document.getElementById('company-tagline').value,
+                    description: document.getElementById('company-description').value,
+                    website: document.getElementById('company-website').value,
+                    email: document.getElementById('company-email').value,
+                    // ... dan seterusnya untuk semua field
+                };
+                localStorage.setItem('companyProfileData', JSON.stringify(companyProfile));
+                console.log('Data disimpan:', companyProfile);
+            });
+        });
+    </script>
+   <script src="auth1.js"></script>
+</body>
+</html>

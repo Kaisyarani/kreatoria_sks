@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asisten AI - Kreatoria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        :root {
+            --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+            --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+            --navbar-height: 88px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Mencegah scroll di body */
+        }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* --- Navbar (Disederhanakan untuk contoh ini) --- */
+        .navbar { height: var(--navbar-height); padding: 0 5%; display: flex; align-items: center; border-bottom: 1px solid var(--bg-light); flex-shrink: 0; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text-primary); text-decoration: none; }
+
+        /* --- Kontainer Chat Utama --- */
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- Area Histori Chat --- */
+        .chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        /* --- Gaya Gelembung Pesan --- */
+        .message-bubble { display: flex; gap: 15px; max-width: 85%; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-light); display: flex; justify-content: center; align-items: center; font-size: 20px; }
+        .message-content { background-color: var(--bg-medium); padding: 15px 20px; border-radius: 12px; }
+        .message-content p { line-height: 1.7; }
+        
+        /* Pesan dari AI */
+        .ai-message { align-self: flex-start; }
+        .ai-message .message-content { border-top-left-radius: 4px; }
+        
+        /* Pesan dari User (setelah memilih) */
+        .user-message { align-self: flex-end; flex-direction: row-reverse; }
+        .user-message .message-content { background-color: var(--accent); color: var(--bg-dark); border-top-right-radius: 4px; }
+        .user-message .avatar { background-color: var(--accent); color: var(--bg-dark); }
+        
+        /* --- Pilihan Jawaban --- */
+        .choices-container {
+            display: flex;
+            gap: 15px;
+            padding-left: 55px; /* Sejajar dengan konten pesan AI */
+            margin-top: -10px;
+        }
+        .choice-btn {
+            background-color: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .choice-btn:hover { background-color: var(--accent); color: var(--bg-dark); }
+
+        /* --- Indikator Mengetik --- */
+        .typing-indicator { display: flex; gap: 5px; align-items: center; padding: 15px 20px; }
+        .typing-indicator span {
+            width: 8px; height: 8px; background-color: var(--bg-light); border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-4px); } }
+
+        /* --- Input Area untuk User --- */
+        .input-area {
+            display: none; /* Ditampilkan oleh JS */
+            flex-shrink: 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--bg-light);
+            background-color: var(--bg-dark);
+        }
+         .input-area textarea {
+            width: 100%;
+            height: 80px;
+            padding: 15px;
+            background-color: var(--bg-medium);
+            border: 1px solid var(--bg-light);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+            resize: none;
+        }
+        .input-area button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border: none;
+            background-color: var(--accent);
+            color: var(--bg-dark);
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index1.html" class="logo">Kreatoria</a>
+    </nav>
+
+    <div class="chat-container">
+        <div class="chat-history" id="chat-history">
+            </div>
+        <div class="input-area" id="input-area">
+            <textarea id="user-detailed-input" placeholder="Contoh: Saya mencari UI/UX Designer dengan pengalaman minimal 3 tahun di aplikasi fintech..."></textarea>
+            <button>Kirim Detail</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const chatHistory = document.getElementById('chat-history');
+    const inputArea = document.getElementById('input-area');
+    const userInput = document.getElementById('user-detailed-input');
+
+    // Helper function untuk menunda eksekusi
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    // Helper function untuk menambahkan gelembung pesan
+    function addMessage(sender, text) {
+        const bubble = document.createElement('div');
+        bubble.className = `message-bubble ${sender}-message`;
+        bubble.innerHTML = `
+            <div class="avatar">
+                <i class="fas ${sender === 'ai' ? 'fa-robot' : 'fa-user'}"></i>
+            </div>
+            <div class="message-content">
+                <p>${text}</p>
+            </div>
+        `;
+        chatHistory.appendChild(bubble);
+        chatHistory.scrollTop = chatHistory.scrollHeight; // Auto scroll ke bawah
+    }
+
+    // Helper function untuk efek mengetik
+    async function typeMessage(text) {
+        const bubble = document.createElement('div');
+        bubble.className = 'message-bubble ai-message';
+        bubble.innerHTML = `
+            <div class="avatar"><i class="fas fa-robot"></i></div>
+            <div class="message-content"><p id="typing-text"></p></div>
+        `;
+        chatHistory.appendChild(bubble);
+        const typingText = document.getElementById('typing-text');
+        
+        for (let i = 0; i < text.length; i++) {
+            typingText.innerHTML += text.charAt(i);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            await sleep(40); // Kecepatan mengetik
+        }
+        // Hapus id agar tidak terpilih lagi
+        typingText.removeAttribute('id');
+    }
+    
+    // Helper function untuk menampilkan indikator mengetik
+    function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.id = 'typing-indicator';
+        indicator.className = 'message-bubble ai-message';
+        indicator.innerHTML = `
+            <div class="avatar"><i class="fas fa-robot"></i></div>
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        chatHistory.appendChild(indicator);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        return indicator;
+    }
+    
+    // Alur Percakapan
+    async function startConversation() {
+        // 1. Perkenalan Diri
+        let typing = showTypingIndicator();
+        await sleep(1500);
+        typing.remove();
+        await typeMessage("Halo! Saya KreatoBot, asisten AI dari Kreatoria. Saya di sini untuk membantu Anda menemukan talenta yang tepat.");
+
+        // 2. Menanyakan Tujuan
+        typing = showTypingIndicator();
+        await sleep(1500);
+        typing.remove();
+        addMessage("ai", "Apa tujuan utama Anda hari ini?");
+        
+        // 3. Menampilkan Pilihan
+        await sleep(500);
+        const choicesContainer = document.createElement('div');
+        choicesContainer.className = 'choices-container';
+        choicesContainer.innerHTML = `
+            <button class="choice-btn" data-choice="recruit">Rekrutmen</button>
+            <button class="choice-btn" data-choice="collab">Kolaborasi</button>
+        `;
+        chatHistory.appendChild(choicesContainer);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        // 4. Menangani Pilihan User
+        choicesContainer.addEventListener('click', async (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const choice = e.target.dataset.choice;
+                const choiceText = e.target.textContent;
+
+                // Tampilkan jawaban user & hapus pilihan
+                addMessage("user", choiceText);
+                choicesContainer.remove();
+
+                // 5. Menanyakan Detail Role
+                typing = showTypingIndicator();
+                await sleep(1500);
+                typing.remove();
+                addMessage("ai", `Baik, untuk tujuan ${choiceText.toLowerCase()}. Posisi atau <i>role</i> apa yang sedang Anda cari? Jelaskan juga pengalaman yang Anda harapkan.`);
+
+                // 6. Menampilkan Area Input
+                await sleep(500);
+                inputArea.style.display = 'block';
+                userInput.focus();
+            }
+        });
+    }
+
+    startConversation();
+});
+</script>
+</body>
+</html>

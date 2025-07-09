@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery Karya - Kreatoria</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+    :root {
+      --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+      --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+      --accent-dark: #0E7490; --navbar-height: 88px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+    .navbar { height: var(--navbar-height); padding: 0 5%; display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-dark); border-bottom: 1px solid var(--bg-medium); position: sticky; top: 0; z-index: 100; }
+    .logo { font-size: 24px; font-weight: 800; }
+    .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .nav-links a { color: var(--text-secondary); font-weight: 500; }
+    .nav-links a.active { color: var(--text-primary); }
+    .profile-dropdown { position: relative; }
+    .profile-btn { display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; }
+    .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .profile-name { color: var(--text-primary); font-weight: 600; }
+    .dropdown-menu { display: none; position: absolute; top: 60px; right: 0; background-color: var(--bg-medium); border-radius: 8px; min-width: 180px; z-index: 110; }
+    .profile-dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu a { display: block; padding: 12px 20px; color: var(--text-secondary); }
+    #logout-btn { color: #ef4444; }
+    .page-header { text-align: center; padding: 60px 20px; }
+    .page-header h1 { font-size: 42px; margin-bottom: 10px; }
+    .page-header p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+    .header-cta { margin-top: 30px; }
+    .btn-post-work { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: 8px; font-weight: 700; font-size: 16px; background-color: var(--accent); color: var(--bg-dark); transition: background 0.3s ease; }
+    .btn-post-work:hover { background-color: var(--accent-dark); color: var(--text-primary); }
+    .gallery-container { padding-top: 40px; }
+    .gallery-controls { display: flex; flex-direction: column; gap: 30px; margin-bottom: 50px; align-items: center; }
+    .search-wrapper { position: relative; width: 100%; max-width: 500px; }
+    #search-bar { width: 100%; padding: 14px 50px; background-color: var(--bg-medium); border: 1px solid var(--bg-light); border-radius: 8px; color: var(--text-primary); font-size: 16px; }
+    .search-wrapper .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+    .filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+    .filter-btn { background-color: var(--bg-medium); border: 1px solid var(--bg-light); padding: 10px 22px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+    .filter-btn.active, .filter-btn:hover { background-color: var(--accent); color: var(--bg-dark); border-color: var(--accent); }
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+    .project-card { display: flex; flex-direction: column; background-color: var(--bg-medium); border-radius: 12px; overflow: hidden; transition: transform 0.3s ease; }
+    .project-card:hover { transform: translateY(-5px); }
+    .project-card-image-link { display: block; width: 100%; height: 220px; background-color: var(--bg-light); }
+    .project-card-image { width: 100%; height: 100%; object-fit: cover; }
+    .project-card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+    .project-card-content h3 { font-size: 20px; margin-bottom: 8px; }
+    .project-card-content p { color: var(--text-secondary); font-size: 14px; margin-bottom: 15px; }
+    .project-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--bg-light); padding: 15px 20px; }
+    .card-actions { display: flex; align-items: center; gap: 20px; }
+    .action-btn { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 14px; }
+    .footer { border-top: 1px solid var(--bg-light); text-align: center; padding: 40px 0; }
+    @media (max-width: 768px) { .nav-links { display: none; } .project-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index1.html" class="logo">Kreatoria</a>
+    <div class="nav-links">
+      <a href="index1.html">Home</a>
+      <a href="gallery-loggedin.html" class="active">Gallery</a>
+      <a href="jobsUser.html">Jobs</a>
+      <a href="about-loggedin.html">About Us</a>
+    </div>
+    <div class="profile-dropdown">
+      <button class="profile-btn">
+        <img src="https://i.pravatar.cc/40" alt="Avatar" class="profile-img">
+        <span class="profile-name" id="user-display-name">User</span>
+      </button>
+      <div class="dropdown-menu">
+        <a href="my-profile.html">Profil Saya</a>
+        <a href="#">Pengaturan</a>
+        <a href="#" id="logout-btn">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <h1>Eksplorasi Karya Mengagumkan</h1>
+      <p>Temukan inspirasi dari ribuan karya yang dibuat oleh para talenta terbaik di komunitas Kreatoria.</p>
+      <div class="header-cta">
+        <a href="create-post.html" class="btn-post-work">
+          <i class="fas fa-plus"></i>
+          <span>Posting Karya Baru</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="container gallery-container">
+      <div class="gallery-controls">
+        <div class="search-wrapper">
+          <span class="icon"><i class="fas fa-search"></i></span>
+          <input type="text" id="search-bar" placeholder="Cari berdasarkan judul atau kreator...">
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="ui-ux">UI/UX Design</button>
+          <button class="filter-btn" data-filter="branding">Branding</button>
+          <button class="filter-btn" data-filter="ilustrasi">Ilustrasi</button>
+          <button class="filter-btn" data-filter="web-dev">Web Development</button>
+        </div>
+      </div>
+      <div class="project-grid" id="project-grid-container">
+        
+        <div class="project-card">
+            <a href="#" class="project-card-image-link">
+                <img class="project-card-image" src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=800&auto=format&fit=crop" alt="UI/UX Project">
+            </a>
+            <div class="project-card-content">
+                <h3>Ollie - Landing Page UI Kit</h3>
+                <p>Oleh: Aditya Pratama</p>
+            </div>
+            <div class="project-card-footer">
+                <div class="card-actions">
+                    <span class="action-btn"><i class="far fa-heart"></i> 1.2k</span>
+                    <span class="action-btn"><i class="far fa-comment"></i> 89</span>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="action-btn"><i class="fas fa-share-alt"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <a href="#" class="project-card-image-link">
+                <img class="project-card-image" src="https://images.unsplash.com/photo-1600692138318-735391516279?q=80&w=800&auto=format&fit=crop" alt="Branding Project">
+            </a>
+            <div class="project-card-content">
+                <h3>Nusantara Coffee - Brand Identity</h3>
+                <p>Oleh: Rina Chen</p>
+            </div>
+            <div class="project-card-footer">
+                <div class="card-actions">
+                    <span class="action-btn"><i class="far fa-heart"></i> 876</span>
+                    <span class="action-btn"><i class="far fa-comment"></i> 54</span>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="action-btn"><i class="fas fa-share-alt"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <a href="#" class="project-card-image-link">
+                <img class="project-card-image" src="https://images.unsplash.com/photo-1627843563095-2df547511c19?q=80&w=800&auto=format&fit=crop" alt="Illustration Project">
+            </a>
+            <div class="project-card-content">
+                <h3>Cosmic Wanderer - Character Design</h3>
+                <p>Oleh: Bayu Wijaya</p>
+            </div>
+            <div class="project-card-footer">
+                <div class="card-actions">
+                    <span class="action-btn"><i class="far fa-heart"></i> 2.1k</span>
+                    <span class="action-btn"><i class="far fa-comment"></i> 152</span>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="action-btn"><i class="fas fa-share-alt"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <a href="#" class="project-card-image-link">
+                <img class="project-card-image" src="https://images.unsplash.com/photo-1542744095-291d1f67b221?q=80&w=800&auto=format&fit=crop" alt="Web Development Project">
+            </a>
+            <div class="project-card-content">
+                <h3>Portfolio Website for Photographers</h3>
+                <p>Oleh: CreativeDevs</p>
+            </div>
+            <div class="project-card-footer">
+                <div class="card-actions">
+                    <span class="action-btn"><i class="far fa-heart"></i> 940</span>
+                    <span class="action-btn"><i class="far fa-comment"></i> 77</span>
+                </div>
+                <div class="card-actions">
+                    <a href="#" class="action-btn"><i class="fas fa-share-alt"></i></a>
+                </div>
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Kreatoria. Semua Hak Cipta Dilindungi.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="post-logic.js"></script>
+</body>
+</html>

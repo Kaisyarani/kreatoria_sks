@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Kreatoria</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <style>
+    /* Font & Variabel */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+    :root {
+      --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+      --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+      --navbar-height: 88px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+    .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+    h1, h2, h3 { font-weight: 800; }
+
+    /* Navbar */
+    .navbar { height: var(--navbar-height); padding: 0 5%; display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 100; position: relative; border-bottom: 1px solid var(--bg-medium); }
+    .logo { font-size: 24px; font-weight: 800; color: var(--text-primary); text-decoration: none; }
+    .navbar-menu { display: flex; align-items: center; gap: 30px; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    .nav-actions { display: flex; align-items: center; gap: 15px; }
+    .nav-button { padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; transition: all 0.3s ease; display: inline-block; }
+    .nav-button-primary { background-color: var(--accent); color: var(--bg-dark); }
+    .nav-button-secondary { background-color: transparent; color: var(--text-primary); border: 1px solid var(--bg-light); }
+    .hamburger-menu { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001; }
+    .hamburger-menu .bar { display: block; width: 25px; height: 3px; background-color: var(--text-primary); margin: 5px 0; transition: all 0.4s ease; }
+
+    @media (max-width: 992px) {
+      .hamburger-menu { display: block; }
+      .navbar-menu { position: absolute; top: var(--navbar-height); left: 0; width: 100%; background-color: var(--bg-medium); flex-direction: column; align-items: center; gap: 0; padding: 20px 0; max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+      .navbar-menu.active { max-height: 500px; }
+      .nav-links, .nav-actions { flex-direction: column; gap: 25px; width: 100%; align-items: center; }
+      .nav-links { margin-bottom: 25px; }
+    }
+
+    /* Form */
+    .form-section { display: flex; justify-content: center; align-items: center; padding: 80px 0; min-height: calc(100vh - var(--navbar-height) - 101px); }
+    .form-container { background-color: var(--bg-medium); padding: 40px; border-radius: 12px; width: 100%; max-width: 500px; border: 1px solid var(--bg-light); }
+    .form-container h1 { text-align: center; margin-bottom: 15px; }
+    .form-container p.subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; font-size: 16px; }
+
+    .account-type-selector {
+      display: flex; background-color: var(--bg-dark); border-radius: 8px;
+      padding: 5px; margin-bottom: 30px;
+    }
+    .account-type-btn {
+      flex: 1; text-align: center; padding: 10px; border-radius: 6px;
+      border: none; background-color: transparent; color: var(--text-secondary);
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .account-type-btn.active { background-color: var(--accent); color: var(--bg-dark); }
+
+    .form-group { margin-bottom: 20px; position: relative; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
+    .form-group input {
+      width: 100%; padding: 12px 16px; background-color: var(--bg-dark);
+      border: 1px solid var(--bg-light); border-radius: 8px;
+      color: var(--text-primary); font-size: 16px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus { outline: none; border-color: var(--accent); }
+
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 42px;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    #company-fields { display: none; }
+
+    .submit-btn {
+      width: 100%; padding: 14px; border: none; border-radius: 8px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      background-color: var(--accent); color: var(--bg-dark);
+      transition: all 0.3s ease; margin-top: 10px;
+    }
+    .submit-btn:hover { box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2); transform: translateY(-2px); }
+
+    .switch-form { text-align: center; margin-top: 30px; font-size: 14px; color: var(--text-secondary); }
+    .switch-form a { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+    .footer { border-top:1px solid var(--bg-light); text-align:center; padding:40px 0; }
+    .footer p { color:var(--text-secondary); font-size:14px; }
+  </style>
+</head>
+<body>
+  <div id="notification"></div>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">Kreatoria</a>
+    <div class="navbar-menu">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="about.html">About Us</a>
+      </div>
+      <div class="nav-actions">
+        <a href="login.html" class="nav-button nav-button-secondary">Login</a>
+        <a href="signup.html" class="nav-button nav-button-primary">Sign Up</a>
+      </div>
+    </div>
+    <button class="hamburger-menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+  </nav>
+
+  <main class="form-section">
+    <div class="form-container">
+      <h1>Bergabung dengan Kreatoria</h1>
+      <p class="subtitle">Mulai perjalanan kreatifmu hari ini.</p>
+
+      <div class="account-type-selector">
+        <button id="btn-kreator" class="account-type-btn active">Saya Kreator</button>
+        <button id="btn-perusahaan" class="account-type-btn">Saya Perusahaan</button>
+      </div>
+
+      <form id="signup-form">
+        <div style="display: none;">
+          <input type="radio" name="accountType" value="user" id="radio-user" checked>
+          <input type="radio" name="accountType" value="company" id="radio-company">
+        </div>
+
+        <div id="kreator-fields">
+          <div class="form-group">
+            <label for="username">Nama Lengkap</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+        </div>
+
+        <div id="company-fields">
+          <div class="form-group">
+            <label for="companyName">Nama Perusahaan</label>
+            <input type="text" id="companyName" name="companyName">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+          <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+        </div>
+
+        <button type="submit" class="submit-btn">Buat Akun</button>
+      </form>
+
+      <p class="switch-form">
+        Sudah punya akun? <a href="login.html">Login di sini</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><p>&copy; 2025 Kreatoria. Semua Hak Cipta Dilindungi.</p></div></footer>
+
+  <script>
+    // Toggle password visibility
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.querySelector('.toggle-password');
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleIcon.classList.toggle('fa-eye');
+      toggleIcon.classList.toggle('fa-eye-slash');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Navbar toggle
+      const hamburger = document.querySelector('.hamburger-menu');
+      const navMenu = document.querySelector('.navbar-menu');
+      hamburger?.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+
+      // Akun type toggle
+      const btnKreator = document.getElementById('btn-kreator');
+      const btnPerusahaan = document.getElementById('btn-perusahaan');
+      const kreatorFields = document.getElementById('kreator-fields');
+      const companyFields = document.getElementById('company-fields');
+      const companyNameInput = document.getElementById('companyName');
+      const kreatorNameInput = document.getElementById('username');
+      const radioUser = document.getElementById('radio-user');
+      const radioCompany = document.getElementById('radio-company');
+
+      btnKreator.addEventListener('click', () => {
+        btnKreator.classList.add('active');
+        btnPerusahaan.classList.remove('active');
+        kreatorFields.style.display = 'block';
+        companyFields.style.display = 'none';
+        kreatorNameInput.required = true;
+        companyNameInput.required = false;
+        radioUser.checked = true;
+      });
+
+      btnPerusahaan.addEventListener('click', () => {
+        btnPerusahaan.classList.add('active');
+        btnKreator.classList.remove('active');
+        kreatorFields.style.display = 'none';
+        companyFields.style.display = 'block';
+        kreatorNameInput.required = false;
+        companyNameInput.required = true;
+        radioCompany.checked = true;
+      });
+    });
+  </script>
+
+  <script src="auth.js"></script>
+  <script src="auth1.js"></script>
+</body>
+</html>

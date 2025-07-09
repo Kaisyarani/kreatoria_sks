@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesan - Kreatoria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+        :root {
+            --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+            --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+            --success-green: #34D399; --danger-red: #EF4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        .chat-app-layout { width: 100%; height: 100%; max-width: 1400px; background-color: var(--bg-medium); border-radius: 16px; overflow: hidden; display: flex; border: 1px solid var(--bg-light); }
+
+        /* --- Sidebar (Daftar Kontak) --- */
+        .chat-sidebar { width: 340px; flex-shrink: 0; border-right: 1px solid var(--bg-light); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--bg-light); flex-shrink: 0; }
+        .sidebar-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .sidebar-title-bar h2 { font-size: 24px; }
+        .home-btn { font-size: 22px; color: var(--text-secondary); text-decoration: none; position: relative; }
+        .notification-badge { position: absolute; top: -4px; right: -6px; width: 12px; height: 12px; background-color: var(--danger-red); border-radius: 50%; border: 2px solid var(--bg-medium); display: none; }
+        .notification-badge.show { display: block; }
+        .search-bar input { width: 100%; padding: 10px 15px; background-color: var(--bg-dark); border: 1px solid var(--bg-light); border-radius: 8px; color: var(--text-primary); font-size: 15px; }
+        .contact-list { flex-grow: 1; overflow-y: auto; }
+        .contact-item { display: flex; align-items: center; padding: 15px 20px; cursor: pointer; transition: background-color 0.2s ease; }
+        .contact-item:hover { background-color: var(--bg-light); }
+        .contact-item.active { background-color: var(--accent-dark); }
+        .contact-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .contact-details { flex-grow: 1; overflow: hidden; }
+        .contact-details .name { font-weight: 700; margin-bottom: 4px; }
+        .contact-details .last-message { font-size: 14px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .contact-meta { text-align: right; }
+        .unread-badge { background-color: var(--accent); color: var(--bg-dark); font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px; }
+        .contact-item.unread .last-message { color: var(--text-primary); font-weight: 600; }
+        .contact-item.unread .name { color: var(--text-primary); }
+
+        /* --- Area Chat Utama --- */
+        .chat-main { flex-grow: 1; display: flex; flex-direction: column; }
+        .chat-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); text-align: center; }
+        .chat-placeholder i { font-size: 50px; margin-bottom: 20px; }
+        .chat-window { display: none; flex-direction: column; height: 100%; }
+        .chat-header { display: flex; align-items: center; padding: 15px 20px; background-color: var(--bg-light); }
+        .contact-avatar { width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; }
+        .contact-info .name { font-weight: 700; }
+        .contact-info .status { font-size: 13px; color: var(--success-green); }
+        .chat-body { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .message { display: flex; flex-direction: column; max-width: 70%; padding: 10px 15px; border-radius: 18px; line-height: 1.6; }
+        .message .text { margin-bottom: 5px; }
+        .message .time { font-size: 11px; opacity: 0.7; align-self: flex-end; }
+        .message.received { background-color: var(--bg-light); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message.sent { background-color: var(--accent); color: var(--bg-dark); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message.sent .time { color: var(--bg-dark); }
+        .chat-footer { display: flex; align-items: center; padding: 15px 20px; background-color: var(--bg-light); gap: 15px; }
+        .chat-footer textarea { flex-grow: 1; background-color: var(--bg-dark); border: 1px solid var(--bg-medium); border-radius: 20px; padding: 12px 20px; color: var(--text-primary); font-size: 15px; resize: none; }
+        .send-btn { background-color: var(--accent); border: none; width: 45px; height: 45px; border-radius: 50%; color: var(--bg-dark); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <div class="chat-app-layout">
+        <aside class="chat-sidebar">
+            <header class="sidebar-header">
+                <div class="sidebar-title-bar">
+                    <h2>Pesan</h2>
+                    <a href="index1.html" class="home-btn" title="Kembali ke Home">
+                        <i class="fas fa-home"></i>
+                        <span class="notification-badge" id="home-notification-badge"></span>
+                    </a>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="search-contact" placeholder="Cari kontak...">
+                </div>
+            </header>
+            <div class="contact-list" id="contact-list"></div>
+        </aside>
+
+        <main class="chat-main">
+            <div class="chat-placeholder" id="chat-placeholder">
+                <i class="fas fa-comments"></i>
+                <h2>Pilih percakapan untuk memulai</h2>
+            </div>
+            <div class="chat-window" id="chat-window">
+                <header class="chat-header">
+                    <img src="" alt="Avatar" class="contact-avatar" id="chat-header-avatar">
+                    <div class="contact-info">
+                        <div class="name" id="chat-header-name"></div>
+                        <p class="status">Online</p>
+                    </div>
+                </header>
+                <div class="chat-body" id="chat-body"></div>
+                <footer class="chat-footer">
+                    <form id="message-form" style="display: contents;">
+                        <textarea id="message-input" placeholder="Ketik pesan..." rows="1"></textarea>
+                        <button type="submit" class="send-btn" aria-label="Kirim"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const chatData = {
+        'user1': {
+            name: 'Clara Wijaya', avatar: 'https://i.pravatar.cc/150?u=clara', unreadCount: 2,
+            messages: [ { text: 'Halo, portofolio kamu keren!', type: 'received', time: '10:30' }, { text: 'Ada revisi minor untuk brief yang kemarin ya', type: 'received', time: '10:31' }]
+        },
+        'user2': {
+            name: 'David Lee', avatar: 'https://i.pravatar.cc/150?u=david', unreadCount: 0,
+            messages: [ { text: 'Bro, apa kabar?', type: 'received', time: 'Kemarin' }, { text: 'Baik, bro. Kamu gimana?', type: 'sent', time: 'Kemarin' }]
+        },
+        'user3': {
+            name: 'Rina Agustina', avatar: 'https://i.pravatar.cc/150?u=rina', unreadCount: 1,
+            messages: [ { text: 'Oke, ditunggu ya. Thanks!', type: 'received', time: '08:21' } ]
+        }
+    };
+
+    const contactList = document.getElementById('contact-list');
+    const chatPlaceholder = document.getElementById('chat-placeholder');
+    const chatWindow = document.getElementById('chat-window');
+    const chatHeaderAvatar = document.getElementById('chat-header-avatar');
+    const chatHeaderName = document.getElementById('chat-header-name');
+    const chatBody = document.getElementById('chat-body');
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    const searchInput = document.getElementById('search-contact');
+    const homeNotifBadge = document.getElementById('home-notification-badge');
+
+    function renderContactList() {
+        contactList.innerHTML = '';
+        Object.keys(chatData).forEach(userId => {
+            const user = chatData[userId];
+            const lastMessage = user.messages[user.messages.length - 1] || { text: 'Belum ada pesan' };
+            const isUnread = user.unreadCount > 0;
+
+            const contactElement = document.createElement('div');
+            contactElement.className = `contact-item ${isUnread ? 'unread' : ''}`;
+            contactElement.dataset.userId = userId;
+            contactElement.innerHTML = `
+                <img src="${user.avatar}" alt="${user.name}">
+                <div class="contact-details">
+                    <div class="name">${user.name}</div>
+                    <p class="last-message">${lastMessage.text}</p>
+                </div>
+                <div class="contact-meta">
+                    ${isUnread ? `<span class="unread-badge">${user.unreadCount}</span>` : ''}
+                </div>
+            `;
+            contactList.appendChild(contactElement);
+        });
+        updateHomeNotifBadge();
+    }
+
+    function updateHomeNotifBadge() {
+        const totalUnread = Object.values(chatData).reduce((sum, user) => sum + user.unreadCount, 0);
+        homeNotifBadge.classList.toggle('show', totalUnread > 0);
+    }
+
+    contactList.addEventListener('click', function(e) {
+        const clickedItem = e.target.closest('.contact-item');
+        if (!clickedItem) return;
+        
+        const currentActive = contactList.querySelector('.active');
+        if (currentActive) currentActive.classList.remove('active');
+        clickedItem.classList.add('active');
+        
+        const userId = clickedItem.dataset.userId;
+        const userData = chatData[userId];
+        
+        // Mark as read
+        if(userData.unreadCount > 0) {
+            userData.unreadCount = 0;
+            renderContactList(); // Re-render untuk hapus badge
+            clickedItem.classList.add('active'); // Tetap aktif setelah re-render
+        }
+
+        chatPlaceholder.style.display = 'none';
+        chatWindow.style.display = 'flex';
+        chatHeaderAvatar.src = userData.avatar;
+        chatHeaderName.textContent = userData.name;
+
+        chatBody.innerHTML = '';
+        userData.messages.forEach(msg => appendMessage(msg.text, msg.type, msg.time, false));
+    });
+
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const messageText = messageInput.value.trim();
+        const activeContactItem = contactList.querySelector('.active');
+
+        if (messageText && activeContactItem) {
+            const userId = activeContactItem.dataset.userId;
+            appendMessage(messageText, 'sent');
+            chatData[userId].messages.push({text: messageText, type: 'sent'});
+            messageInput.value = '';
+
+            // Simulasi balasan dan notifikasi
+            setTimeout(() => {
+                const replyText = "Siap, terima kasih infonya!";
+                appendMessage(replyText, 'received');
+                chatData[userId].messages.push({text: replyText, type: 'received'});
+                saveNotification(chatData[userId].name, replyText);
+            }, 1500);
+        }
+    });
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        document.querySelectorAll('.contact-item').forEach(item => {
+            const name = item.querySelector('.name').textContent.toLowerCase();
+            item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+        });
+    });
+
+    function saveNotification(senderName, message) {
+        let notifications = JSON.parse(localStorage.getItem('kreatoriaNotifications')) || [];
+        const newNotif = {
+            id: 'notif_' + Date.now(),
+            sender: senderName,
+            message: message,
+            timestamp: new Date().toISOString(),
+            isRead: false
+        };
+        notifications.unshift(newNotif);
+        localStorage.setItem('kreatoriaNotifications', JSON.stringify(notifications));
+        updateHomeNotifBadge(); // Meskipun tidak terlihat langsung, ini untuk konsistensi
+        alert(`Notifikasi baru disimpan dari ${senderName}`);
+    }
+
+    function appendMessage(text, type, time, isNew = true) {
+        const messageTime = time || new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', type);
+        messageElement.innerHTML = `<p class="text">${text}</p><span class="time">${messageTime}</span>`;
+        chatBody.appendChild(messageElement);
+        if(isNew) chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    renderContactList(); // Initial render
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Agensi Digital - Kreatoria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+        :root {
+            --bg-dark: #111827; --bg-medium: #1F2937; --bg-light: #374151;
+            --text-primary: #F9FAFB; --text-secondary: #9CA3AF; --accent: #22D3EE;
+            --navbar-height: 88px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); }
+        a { color: inherit; text-decoration: none; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+        /* Navbar standar */
+        .navbar { height: var(--navbar-height); padding: 0 5%; display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-dark); border-bottom: 1px solid var(--bg-medium); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: 800; }
+        /* ... (style navbar lainnya jika ada) ... */
+
+        /* Profile Header */
+        .profile-header {
+            position: relative;
+            height: 350px;
+            background-color: var(--bg-light);
+            margin-bottom: 80px;
+        }
+        .profile-banner {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-header-content {
+            position: absolute;
+            bottom: -60px; /* Setengah dari tinggi logo */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+        .profile-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--bg-dark);
+            object-fit: cover;
+            background-color: var(--bg-dark);
+        }
+        .profile-header h1 {
+            font-size: 36px;
+            margin-top: 10px;
+        }
+        .profile-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        .profile-header-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; border: none; }
+        .btn-primary { background-color: var(--accent); color: var(--bg-dark); }
+        .btn-primary:hover { background-color: #0E7490; color: var(--text-primary); }
+        .btn-secondary { background-color: var(--bg-medium); color: var(--text-primary); }
+        .btn-secondary:hover { background-color: var(--bg-light); }
+
+        /* Profile Body */
+        .profile-body {
+            padding: 40px 0;
+            display: flex;
+            gap: 30px;
+        }
+        .profile-main {
+            flex-grow: 1;
+        }
+        .profile-sidebar {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        .content-box {
+            background-color: var(--bg-medium);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .content-box h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        .content-box .about-text {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Sidebar Info */
+        .info-list .info-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px; }
+        .info-list .info-item i { font-size: 16px; color: var(--text-secondary); margin-top: 5px; width: 20px; }
+        .info-list .info-item div { font-size: 15px; }
+        .info-list .info-item a { color: var(--accent); font-weight: 600; }
+        .info-list .info-item a:hover { text-decoration: underline; }
+
+        .social-links { display: flex; gap: 20px; }
+        .social-links a { font-size: 24px; color: var(--text-secondary); transition: color 0.3s ease; }
+        .social-links a:hover { color: var(--accent); }
+
+        /* Tabs */
+        .tab-nav { display: flex; gap: 10px; border-bottom: 1px solid var(--bg-medium); margin-bottom: 20px; }
+        .tab-btn { background: none; border: none; color: var(--text-secondary); font-size: 16px; font-weight: 600; padding: 15px 20px; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Placeholder for Jobs/Works Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .job-card {
+            background-color: var(--bg-medium);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .job-card h3 { font-size: 18px; margin-bottom: 5px; }
+        .job-card p { color: var(--text-secondary); font-size: 14px; }
+
+        .footer { border-top: 1px solid var(--bg-light); text-align: center; padding: 40px 0; margin-top: 40px; }
+
+        @media (max-width: 992px) {
+            .profile-body { flex-direction: column; }
+            .profile-sidebar { width: 100%; }
+        }
+        @media (max-width: 576px) {
+            .profile-header { height: 280px; }
+            .profile-header-content { bottom: -80px; }
+            .profile-logo { width: 100px; height: 100px; }
+            .profile-header h1 { font-size: 28px; }
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Kreatoria</a>
+    </nav>
+
+    <header class="profile-header">
+        <img src="https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029" alt="Banner Perusahaan" class="profile-banner" id="company-banner-display">
+        <div class="profile-header-content">
+            <img src="https://ui-avatars.com/api/?name=AD&background=1F2937&color=F9FAFB&size=128" alt="Logo Perusahaan" class="profile-logo" id="company-logo-display">
+            <h1 id="company-name-display">Agensi Digital Kreatif</h1>
+            <p id="company-tagline-display">We Build Awesome Digital Experiences</p>
+            <div class="profile-header-actions">
+                <a href="perusa.html" class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Edit Profil</a>
+                <button class="btn btn-secondary"><i class="fas fa-envelope" ></i> Hubungi Kami</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-body">
+            <main class="profile-main">
+                <div class="content-box">
+                    <h2>Tentang Kami</h2>
+                    <p class="about-text" id="company-description-display">
+                        Kami adalah agensi digital yang berfokus pada inovasi dan kreativitas. Sejak 2020, kami telah membantu berbagai klien dari berbagai industri untuk mencapai tujuan mereka melalui solusi digital yang efektif dan desain yang memukau. Tim kami terdiri dari para ahli di bidang UI/UX, pengembangan web, dan branding.
+                    </p>
+                </div>
+
+                <div>
+                    <nav class="tab-nav">
+                        <button class="tab-btn active" data-tab="jobs">Lowongan Pekerjaan (2)</button>
+                        <button class="tab-btn" data-tab="works">Karya (8)</button>
+                    </nav>
+
+                    <div id="jobs" class="tab-content active">
+                        <div class="items-grid">
+                            <div class="job-card">
+                                <h3>UI/UX Designer (Senior)</h3>
+                                <p>Remote • Full-time</p>
+                            </div>
+                            <div class="job-card">
+                                <h3>Frontend Developer (React)</h3>
+                                <p>Jakarta • Full-time</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="works" class="tab-content">
+                         <p style="text-align: center; color: var(--text-secondary);">Galeri karya perusahaan akan ditampilkan di sini.</p>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="profile-sidebar">
+                <div class="content-box">
+                    <h2>Informasi</h2>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <i class="fas fa-globe"></i>
+                            <div><a href="#" id="company-website-display" target="_blank">agensidigital.com</a></div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div id="company-location-display">Jakarta, Indonesia</div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-briefcase"></i>
+                            <div id="company-industry-display">Pemasaran & Periklanan</div>
+                        </div>
+                         <div class="info-item">
+                            <i class="fas fa-users"></i>
+                            <div id="company-size-display">11-50 Karyawan</div>
+                        </div>
+                    </div>
+                    <hr style="border-color: var(--bg-light); margin: 20px 0;">
+                    <h2>Media Sosial</h2>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Kreatoria. Semua Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Script untuk fungsionalitas Tab
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    document.getElementById(button.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Dalam aplikasi nyata, Anda akan menambahkan logika di sini
+            // untuk hanya menampilkan tombol "Edit Profil" jika pengguna yang login
+            // adalah pemilik profil ini.
+        });
+    </script>
+    <script src="post-logic.js"></script>
+</body>
+</html>
